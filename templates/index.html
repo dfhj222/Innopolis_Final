@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Flask application</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+		
+		<style>
+			.navbar-fixed {				
+				background-color: #17a589;
+				display: flex;
+				justify-content: center;
+				align-items: center;				
+			}
+
+			.nav-wrapper {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.nav-title {
+				font-size: 36px;
+				font-weight: 700;
+				margin: 0;
+				color: white;
+			}
+
+			.description {
+				font-size: 22px;
+			}
+
+			.btn {
+				font-size: 22px;
+			}
+
+			.input-field {
+				font-size: 16px;
+			}
+
+
+		</style>
+	</head>
+	<body>
+		<div class="navbar-fixed">
+			<div class="nav-wrapper">
+				<h1 class="nav-title">Анализ снимков МРТ мозга</h1>
+			</div>
+		</div>
+			
+		<div class="row">
+			<form class="col s12" action="/process" method="POST" enctype = "multipart/form-data">
+				<div class="row">
+					<div class="input-field col s12">
+						<input name="imgParameter" id="imgParameter" type="file" accept=".jpg" required/>
+					</div>
+				</div>
+				<button class="btn waves-effect waves-light" type="submit">Анализ</button>
+			</form>
+		</div>
+
+		<hr />
+		<div class="description">	
+			<a href="http://127.0.0.1:5000/result">Все результаты</a>
+		</div>
+		<hr />
+	</body>
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+</html>

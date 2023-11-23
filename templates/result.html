@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Flask application</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+		
+		<style>
+			.navbar-fixed {				
+				background-color: #17a589;
+				display: flex;
+				justify-content: center;
+				align-items: center;				
+			}
+
+			.nav-wrapper {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.nav-title {
+				font-size: 36px;
+				font-weight: 700;
+				margin: 0;
+				color: white;
+			}
+
+			.description {
+				font-size: 22px;
+			}
+		</style>
+
+	</head>
+	
+	<body>
+		<div class="navbar-fixed">
+			<div class="nav-wrapper">
+				<h1 class="nav-title">Страница просмотра всех результатов</h1>
+			</div>
+		</div>
+			
+		<div class="description">	
+			<table class="col s12">
+			<tr>
+				<th>Исходный снимок</th>
+				<th>Очищенный от шума снимок</th>
+				<th>Результат анализа</th>
+				<th>Дата и время</th>
+			</tr>
+			
+			{% for res in data %}
+				<tr> 
+					<td><img src="data:image/jpeg;base64,{{ res[1] }}" width="300" height="300"></td> 
+					<td><img src="data:image/jpeg;base64,{{ res[2] }}" width="300" height="300"></td> 
+					<td>{{res[3]}}</td> 
+					<td>{{res[4]}}</td> 
+				</tr> 
+			{% endfor %}
+			
+			</table>
+		</div>
+
+		<hr />
+		
+		<div class="description">	
+			<a href="http://127.0.0.1:5000/">На главную</a>
+		</div>
+		<hr />
+				
+	</body>
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+</html>

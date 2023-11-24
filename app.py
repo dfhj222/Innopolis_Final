@@ -17,11 +17,11 @@ app = Flask(__name__)
 device = 'cpu' # torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 model_autoencoder = AutoencoderConv()
-model_autoencoder.load_state_dict(torch.load(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\InnopolysFinal-main\autoecoder_model.pth'))
+model_autoencoder.load_state_dict(torch.load(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\autoencoder_model.pth'))
 model_autoencoder = model_autoencoder.to(device)
 
 model_classifier = TumorClassifier(num_classes=4)
-model_classifier.load_state_dict(torch.load(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\InnopolysFinal-main\classifier_model.pth'))
+model_classifier.load_state_dict(torch.load(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\classifier_model.pth'))
 model_classifier = model_classifier.to(device)
 
 transform = transforms.Compose([transforms.Resize((224, 224)),torchvision.transforms.Grayscale(num_output_channels=1),transforms.ToTensor()])
@@ -76,7 +76,7 @@ def process():
     
     imgProcessed = img2byte(test)
     
-    sqliteConnection = sqlite3.connect(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\InnopolysFinal-main\SQLite_database.db')
+    sqliteConnection = sqlite3.connect(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\SQLite_database.db')
     cursor = sqliteConnection.cursor()
     sqlite_insert_blob_query = """INSERT INTO table_1
                                   (input_image, output_image, model_prediction, datetime) VALUES (?, ?, ?, ?)"""
@@ -94,7 +94,7 @@ def process():
 
 @app.route("/result")
 def result():
-    sqliteConnection = sqlite3.connect(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\InnopolysFinal-main\SQLite_database.db')
+    sqliteConnection = sqlite3.connect(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\SQLite_database.db')
     cursor = sqliteConnection.cursor()
 
     cursor.execute('SELECT * FROM table_1')

@@ -14,30 +14,31 @@ import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
+# Выбираем устройством для проведения расчетов процессор
 device = 'cpu' # torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
+# Создаем модель автоэнкодера для очистки изображения от шума
 model_autoencoder = AutoencoderConv()
 model_autoencoder.load_state_dict(torch.load(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\autoencoder_model.pth'))
 model_autoencoder = model_autoencoder.to(device)
-
+# Создаем модель классификатора
 model_classifier = TumorClassifier(num_classes=4)
 model_classifier.load_state_dict(torch.load(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\classifier_model.pth'))
 model_classifier = model_classifier.to(device)
-
+# Создаем преобразователи изображений
 transform = transforms.Compose([transforms.Resize((224, 224)),torchvision.transforms.Grayscale(num_output_channels=1),transforms.ToTensor()])
 transform2 = transforms.Compose([transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
-transform3 = transforms.Compose([torchvision.transforms.Grayscale(num_output_channels=1)])
-
+# Главная страница
 @app.route("/")
 def index():
     return render_template('index.html')
-
+# Страница с расчетами
 @app.route('/process', methods = ['POST'])
 def process():
-    print('request.files', request.files)
+    # print('request.files', request.files)
+    # Считываем путь к изображению
     imgParameter = request.files['imgParameter']
-    print('request.files[imgParameter]', imgParameter)
-    
+    # print('request.files[imgParameter]', imgParameter)
+    # Открываем файл изображения
     try:
         input_image = Image.open(imgParameter)
         input_tensor = transform(input_image).reshape([1,1,224,224])
@@ -47,15 +48,15 @@ def process():
         errorName = e
         stackTrace = traceback.format_exc()
         return render_template('error.html', errorName = errorName, stackTrace = stackTrace)
-    
+    # Очищаем изображение от шума с помощью модели автоэнкодера
     with torch.no_grad():
         clean_image = model_autoencoder(input_tensor)
-        
+    # Производим анализ изображения на предмет наличия болезни 
     with torch.no_grad():
         output_classes = model_classifier(transform2(clean_image.repeat(1, 3, 1, 1)))
-
+    # Список болезней
     classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
-
+    # Производим преобразование выхода модели
     stringParameter = ''
     output_classes = output_classes.to('cpu').numpy()[0]
     output_classes[output_classes < 0] = 0
@@ -63,7 +64,7 @@ def process():
         if value > 0:
             print(f'{class_name}: {round(value/sum(output_classes) * 100,0)}%')
             stringParameter = stringParameter + f'{class_name}: {round(value/sum(output_classes) * 100,0)}% '
-    
+    # Преобразовывем изображения для вывода на страницу
     imgOriginal = img2byte(input_image)
     
     print(clean_image.shape)
@@ -75,7 +76,7 @@ def process():
     test = Image.fromarray(clean_image_numpy, mode="L")
     
     imgProcessed = img2byte(test)
-    
+    # Записываем результаты анализа в БД
     sqliteConnection = sqlite3.connect(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\SQLite_database.db')
     cursor = sqliteConnection.cursor()
     sqlite_insert_blob_query = """INSERT INTO table_1
@@ -91,7 +92,7 @@ def process():
     
     return render_template('process.html', stringParameter = stringParameter, #, intParameter = intParameter, 
     imgOriginal = imgOriginal.decode('utf-8'), imgProcessed = imgProcessed.decode('utf-8'))
-
+# Страница со всеми результатами
 @app.route("/result")
 def result():
     sqliteConnection = sqlite3.connect(r'C:\Users\Imaev-AR\Desktop\Google диск\Обучение Аналитика данных\Итоговая аттестация\Innopolis_Final\SQLite_database.db')

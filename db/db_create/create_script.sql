@@ -1,14 +1,10 @@
 BEGIN TRANSACTION;
-CREATE TABLE IF NOT EXISTS "result_history" (
-	"id"	INTEGER,
-	"class"	INTEGER,
-	"usage_id"	INTEGER,
-	PRIMARY KEY("id")
-);
-CREATE TABLE IF NOT EXISTS "usage_history" (
-	"id"	INTEGER UNIQUE,
-	"date"	TEXT,
-	"time"	TEXT,
+CREATE TABLE "table_1" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"input_image"	BLOB NOT NULL,
+	"output_image"	BLOB NOT NULL,
+	"model_prediction"	TEXT NOT NULL,
+	"datetime"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
-);
+)
 COMMIT;
